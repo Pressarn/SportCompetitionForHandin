@@ -1,4 +1,4 @@
-// /rodi0231(Robert Dighem)_sisc7379(Simon Schwieler)_arho2993(Aaron Holmquist)
+// /rodi0231(Robert Dighem)_sisc7379(Simon Schwieler)_arho2993(Aaron Holmquist) Grupp 320.
 
 
 public class Result implements Comparable<Result> {
@@ -11,10 +11,17 @@ public class Result implements Comparable<Result> {
         this.score = score;
         this.participant = participant;
         this.event = event;
+
+
+
     }
 
     public double getScore(){
         return score;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
     }
 
     public Participant getParticipant(){
@@ -40,10 +47,4 @@ public class Result implements Comparable<Result> {
             return -1;
 
     }
-
-    public int compareName(Result other) {
-        return event.getEventName().compareTo(other.getEvent().getEventName());
-    }
-
-
 }

@@ -1,4 +1,4 @@
-// /rodi0231(Robert Dighem)_sisc7379(Simon Schwieler)_arho2993(Aaron Holmquist)
+// /rodi0231(Robert Dighem)_sisc7379(Simon Schwieler)_arho2993(Aaron Holmquist) Grupp 320.
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -6,9 +6,10 @@ import java.util.Scanner;
 public class SportsCompetition {
 
     private Scanner keyboard = new Scanner(System.in);
-
     private List<Participant> participantList = new ArrayList<>();
-    private List<Event> eventList = new ArrayList<>();
+   // private List<Event> eventList = new ArrayList<>();
+    private Event[] eventArray = new Event[1];
+
 
     private void writeMenu(){
         System.out.println("Following commands are possible:");
@@ -34,8 +35,8 @@ public class SportsCompetition {
             if (cmd.matches("message.+")) {
                 message(cmd);
             }
-            else if (getEvent(cmd) != null){
-                eventResult(cmd);
+            else if (getEvent(normalizer(cmd)) != null){
+                eventResult(normalizer(cmd));
             }else {
                 switch (cmd) {
                     case "add event":
@@ -67,13 +68,27 @@ public class SportsCompetition {
     }
 
     private void eventResult(String eventName) {
-        Event event = null;
-        for (Event tempEvent : eventList) {
+        Event event = getEvent(eventName);
+
+      /*  for(int x = 0; x<eventArray.length; x++){
+            if(eventArray[x].getEventName().equalsIgnoreCase(eventName)){
+                event = eventArray[x];
+            }
+        }
+        for(Event e :eventArray){
+            if(e.getEventName().equalsIgnoreCase(eventName)){
+                event = e;
+            }
+        }
+
+
+      /*  for (Event tempEvent : eventList) {
             if (eventName.equalsIgnoreCase(tempEvent.getEventName())) {
                 event = tempEvent;
                 break;
             }
-        }
+        }*/
+
         event.getResultForEvent();
     }
 
@@ -106,16 +121,30 @@ public class SportsCompetition {
             Result r = new Result(score, p, e);
             e.addResult(r);
             p.addResult(r);
+
             System.out.println("Result for " + p.getFirstName() + " in " + e + " added!");
 
         }
     }
 
     private Event getEvent (String eventName){
-        for (Event event : eventList){
+     /*   for (Event event : eventList){
             if (event.getEventName().equalsIgnoreCase(eventName)){
                 return event;
             }
+        }*/
+        if(eventArray[0] != null) {
+         /*   for (int x = 0; x < eventArray.length; x++) {
+                if (eventArray[x].getEventName().equalsIgnoreCase(eventName)) {
+                    return eventArray[x];
+                }
+            }*/
+         for(Event e: eventArray){
+             if(e != null && e.getEventName().equalsIgnoreCase(eventName)){
+                 return e;
+             }
+
+         }
         }
         return null;
     }
@@ -160,8 +189,38 @@ public class SportsCompetition {
             System.out.println("Error: Attempts can't be smaller than 1!");
         }
         Event event = new Event(eventName, attempts);
-        eventList.add(event);
+
+        if(eventArray[0] == null) {
+            eventArray[0] = event;
+        }
+        else if(isArrayFull(eventArray)) {
+            eventArray = createBiggerArray(eventArray);
+            addEventToList(event);
+        }
+        else {
+            addEventToList(event);
+        }
+
         System.out.println(event.getEventName() + " has been added.");
+    }
+
+    private void addEventToList(Event event){
+        for (int x = 1; x < eventArray.length; x++) {
+            if (eventArray[x] == null) {
+                eventArray[x] = event;
+                break;
+            }
+        }
+    }
+
+    private boolean isArrayFull(Event [] arr){
+        return arr[arr.length - 1] != null;
+    }
+
+    private Event[] createBiggerArray(Event[] arr){
+        Event[] biggerArray = new Event[arr.length + 10];
+        System.arraycopy(arr, 0, biggerArray, 0, arr.length);
+        return biggerArray;
     }
 
     private void addParticipant(){
@@ -199,9 +258,10 @@ public class SportsCompetition {
         }
 
         participantList.remove(p);
-        for(Event e : eventList){
-            e.removeResult(p);
-
+        for(Event e : eventArray){
+            if(e != null) {
+                e.removeResult(p);
+            }
         }
         System.out.println(p.getFirstName() + " " + p.getLastName() + " from " + p.getTeamName() + " with number " + p.getId() + " removed.");
     }
@@ -225,7 +285,6 @@ public class SportsCompetition {
 
         s = s.toLowerCase().trim();
         if (s.isEmpty()){
-//            throw new IllegalArgumentException("");
             System.out.println("Error: String is empty.");
 
         }
@@ -280,7 +339,6 @@ public class SportsCompetition {
     private void run() {
         setUp();
         runCommandLoop();
-//        closeDown();
     }
 
     public static void main(String[] args) {
